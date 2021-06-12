@@ -160,6 +160,10 @@
       if (HasTagValue(way, 'access', 'no')) {
         return { permitted: false, result: { lts: 0, message: ['Cycling not permitted due to access=\'no\' tag.'], rule: 'p6' } }
       }
+      //added the case where the access is private
+      if (HasTagValue(way, 'access', 'private')) {
+        return { permitted: false, result: { lts: 0, message: ['Cycling not permitted due to access=\'private\' tag.'], rule: 'p6' } }
+      }
       if (HasTagValue(way, 'highway', 'motorway')) {
         return { permitted: false, result: { lts: 0, message: ['Cycling not permitted due to highway=\'motorway\' tag.'], rule: 'p3' } }
       } else if (HasTagValue(way, 'highway', 'motorway_link')) {
@@ -167,6 +171,7 @@
       } else if (HasTagValue(way, 'highway', 'proposed')) {
         return { permitted: false, result: { lts: 0, message: ['Cycling not permitted due to highway=\'proposed\' tag.'], rule: 'p7' } }
       }
+      
       if (HasTagValue(way, 'footway', 'sidewalk')) {
         if (!HasTagValue(way, 'bicycle', 'yes')) {
           if (HasTagValue(way, 'highway', 'footway') || HasTagValue(way, 'highway', 'path')) {
@@ -180,7 +185,7 @@
 
     return { permitted: true, message: [] }
   }
-
+// check also if path is for hiking
   function isSeparatedPath (way) {
     let rule = ''
     let message = []
@@ -429,6 +434,8 @@
       message.push('Setting LTS to 1 because motor_vehicle=\'no\'.')
       return { isMixedTraffic: true, result: { lts: 1, message: message, rule: 'm17' } }
     }
+    //I'm not sure about this: for a bike is hard to move over the steps!!!!
+    //add this level if there is also ramp:bicycle=yes
     if (HasTagValue(way, 'highway', 'steps')) {
       message.push('Setting LTS to 1 because highway=\'steps\'.')
       return { isMixedTraffic: true, result: { lts: 1, message: message, rule: 'm1' } }
